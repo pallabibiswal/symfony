@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -14,15 +16,24 @@ class NotesController extends Controller
      */
     public function indexAction()
     {
-        return $this->render("index.html.twig",["name" => "pall"]);
+        return $this->render("index.html.twig");
     }
 
     /**
-     * @Route("/data", name="save_data")
+     * @Route("/register", name="register_page")
      */
-    public function SaveData()
+    public function renderRegistrationForm()
     {
-        print_r($_POST);exit;
-//        return new Response("pallabi");
+        $form = $this->createFormBuilder()
+           ->add('email', TextType::class)
+           ->add('username', TextType::class)
+           ->add('password', TextType::class)
+           ->add('confirm_password', TextType::class)
+           ->add('save', SubmitType::class, ['label' => 'Register', 'attr' => ['class'=>'btn btn-primary mb-2']])
+           ->getForm();
+
+        return $this->render('register.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }
