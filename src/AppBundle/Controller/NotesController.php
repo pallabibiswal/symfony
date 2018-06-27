@@ -14,7 +14,7 @@ class NotesController extends Controller
      */
     public function indexAction()
     {
-        return $this->render("Notes/index.html.twig");
+        return $this->render("index.html.twig",["name" => "pall"]);
     }
 
     /**
