@@ -1,0 +1,14 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% block body %}
+    {{ parent() }}
+    <div class="container col-md-6  border-primary mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-primary" role="alert">
+                     Hello {{  name }} Please login to upload files.Thank You
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

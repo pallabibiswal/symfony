@@ -2,11 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+
+use AppBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use AppBundle\Form\UserType;
 
 
 class NotesController extends Controller
@@ -21,19 +24,35 @@ class NotesController extends Controller
 
     /**
      * @Route("/register", name="register_page")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
+     * @return Response
      */
-    public function renderRegistrationForm()
+    public function registerAction(Request $request, UserPasswordEncoderInterface $encoder)
     {
-        $form = $this->createFormBuilder()
-           ->add('email', TextType::class)
-           ->add('username', TextType::class)
-           ->add('password', TextType::class)
-           ->add('confirm_password', TextType::class)
-           ->add('save', SubmitType::class)
-           ->getForm();
+        $user = new User();
+        $form = $this->createForm(UserType::class, $user);
 
-        return $this->render('register.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $password = $encoder->encodePassword($user, $user->getPassword());
+            $user->setPassword($password);
+
+            $entity_manager = $this->getDoctrine()->getManager();
+            $entity_manager->persist($user);
+            $entity_manager->flush();
+
+            return $this->render('profile.html.twig',[
+                'name' => $user->getUsername(),
+                'id' => $user->getId()
+            ]);
+        }
+
+        return $this->render(
+            'register.html.twig',
+            array('form' => $form->createView())
+        );
     }
 }

@@ -2,7 +2,8 @@
 # https://symfony.com/doc/current/security.html
 security:
     encoders:
-            FOS\UserBundle\Model\UserInterface: bcrypt
+        FOS\UserBundle\Model\UserInterface: bcrypt
+        AppBundle\Entity\User: bcrypt
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
