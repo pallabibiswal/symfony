@@ -29,7 +29,7 @@ class NotesController extends Controller
            ->add('username', TextType::class)
            ->add('password', TextType::class)
            ->add('confirm_password', TextType::class)
-           ->add('save', SubmitType::class, ['label' => 'Register', 'attr' => ['class'=>'btn btn-primary mb-2']])
+           ->add('save', SubmitType::class)
            ->getForm();
 
         return $this->render('register.html.twig', [

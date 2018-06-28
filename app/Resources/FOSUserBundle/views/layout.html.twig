@@ -10,10 +10,10 @@
                         <li class="nav-item active">
                             <a class="nav-link" href="{{ path('register_page') }}">Register <span class="sr-only">(current)</span></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('fos_user_profile_show') }}">Profile</a>
-                        </li>
                         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('fos_user_profile_show') }}">Profile</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('fos_user_security_logout') }}">{{ 'Logout'|trans({}, 'FOSUserBundle') }}</a>
                             </li>|
