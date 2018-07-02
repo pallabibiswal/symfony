@@ -11,8 +11,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use AppBundle\Form\UserType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
-
+/**
+ * Class NotesController
+ * @package AppBundle\Controller
+ */
 class NotesController extends Controller
 {
     /**
@@ -20,7 +25,7 @@ class NotesController extends Controller
      */
     public function indexAction()
     {
-        return new Response("eferv")
+        return $this->render("index.html.twig");
     }
 
     /**
@@ -60,19 +65,38 @@ class NotesController extends Controller
     /**
      * @Route("/profile/pic", name="save_image")
      */
-    public function uploadFile()
+    public function uploadFile(Request $request)
     {
+        $user_ob = $this->getUser();
         $vote = new Vote();
-        $userob = $this->getDoctrine()
-            ->getRepository(User::class)
-            ->find($_POST['ref_id']);
+        $form = $this->createFormBuilder($vote)
+            ->add('file', FileType::class, array('label' => 'Photo (png, jpeg)'))
+            ->add('save', SubmitType::class, array('label' => 'Upload'))
+            ->getForm();
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $vote->getFile();
+            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
+            $file->move($this->getParameter('photos_directory'), $fileName);
+            $vote->setFile($fileName);
+            $vote->setUser($user_ob);
+            $entity_manager = $this->getDoctrine()->getManager();
+            $entity_manager->persist($vote);
+            $entity_manager->flush();
+            return $this->render("index.html.twig");
+        } else {
+            return $this->render('upload_pic.html.twig', array(
+                'form' => $form->createView(),
+                'user' => $user_ob
+            ));
+        }
+    }
 
-        $vote->setFile($_POST['file']);
-        $vote->setUser($userob);
-        $entity_manager = $this->getDoctrine()->getManager();
-        $entity_manager->persist($vote);
-        $entity_manager->flush();
-
-        return $this->render("index.html.twig");
+    /**
+     * @return string
+     */
+    public function generateUniqueFileName()
+    {
+        return md5(uniqid());
     }
 }
