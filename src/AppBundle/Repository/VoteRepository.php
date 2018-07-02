@@ -2,6 +2,8 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\User;
+
 /**
  * VoteRepository
  *
@@ -10,4 +12,10 @@ namespace AppBundle\Repository;
  */
 class VoteRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getAllData() {
+        return $this->createQueryBuilder('v')
+            ->select('v.id, v.file, u.username, u.email')
+            ->leftJoin("v.user", "u")
+            ->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY) ;
+    }
 }

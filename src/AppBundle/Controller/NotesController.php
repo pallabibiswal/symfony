@@ -25,7 +25,12 @@ class NotesController extends Controller
      */
     public function indexAction()
     {
-        return $this->render("index.html.twig");
+        $data = $this->getDoctrine()->getManager()->getRepository('AppBundle:Vote')
+            ->getAllData();
+
+        return $this->render("index.html.twig", [
+            'data' => $data
+        ]);
     }
 
     /**

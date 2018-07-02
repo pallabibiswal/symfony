@@ -2,34 +2,22 @@
 
 {% block body %}
     {{ parent() }}
+
     <div class="container col-md-12 mt-5">
         <div class="row">
             <div class="col-md-12 mt-3">
-                {#<div class="col-md-6">#}
-                    <ul class="list-unstyled">
+                <ul class="list-unstyled">
+                    {% for info in data %}
+                        {{ dump(info) }}
                         <li class="media">
-                            <img class="mr-3" src="{{ asset('favicon.ico') }}" alt="Generic placeholder image">
+                            <img class="mr-3" height="100px" width="100px" src="{{ asset('uploads/photos/') }}{{ info.file }}" alt="Generic placeholder image">
                             <div class="media-body">
-                                <h5 class="mt-0 mb-1">List-based media object</h5>
-                                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                                <h2> Username : {{ info.username }}</h2>
+                                <h4> Email Id : {{ info.email }}</h4>
                             </div>
                         </li>
-                        <li class="media">
-                            <img class="mr-3" src="{{ asset('favicon.ico') }}" alt="Generic placeholder image">
-                            <div class="media-body">
-                                <h5 class="mt-0 mb-1">List-based media object</h5>
-                                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                            </div>
-                        </li>
-                        <li class="media">
-                            <img class="mr-3" src="{{ asset('favicon.ico') }}" alt="Generic placeholder image">
-                            <div class="media-body">
-                                <h5 class="mt-0 mb-1">List-based media object</h5>
-                                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                            </div>
-                        </li>
-                    </ul>
-                {#</div>#}
+                    {% endfor %}
+                </ul>
             </div>
         </div>
     </div>
