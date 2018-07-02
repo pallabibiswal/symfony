@@ -1,0 +1,19 @@
+
+{% block body %}
+    <div class="container col-md-6  border-primary mt-5">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-primary" role="alert">
+                    <p> User Name: {{ user.username }}</p>
+                    <p> Email : {{ user.email }}</p>
+                    <form method="post" action="{{ path('save_image') }}">
+                        <input type="file" name="file" id="_file">
+                        <input type="hidden" name="ref_id" value="{{ user.id }}">
+                        <button type="submit" id="_save">Upload!</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

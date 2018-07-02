@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\User;
+use AppBundle\Entity\Vote;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,7 @@ class NotesController extends Controller
      */
     public function indexAction()
     {
-        return $this->render("index.html.twig");
+        return new Response("eferv")
     }
 
     /**
@@ -54,5 +55,24 @@ class NotesController extends Controller
             'register.html.twig',
             array('form' => $form->createView())
         );
+    }
+
+    /**
+     * @Route("/profile/pic", name="save_image")
+     */
+    public function uploadFile()
+    {
+        $vote = new Vote();
+        $userob = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->find($_POST['ref_id']);
+
+        $vote->setFile($_POST['file']);
+        $vote->setUser($userob);
+        $entity_manager = $this->getDoctrine()->getManager();
+        $entity_manager->persist($vote);
+        $entity_manager->flush();
+
+        return $this->render("index.html.twig");
     }
 }
