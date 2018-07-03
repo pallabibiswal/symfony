@@ -1,0 +1,14 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% block body %}
+    {{ parent() }}
+    <div class="container col-md-6 border border-primary mt-5">
+        <div class="row">
+            <div class="col-md-12 mt-3">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

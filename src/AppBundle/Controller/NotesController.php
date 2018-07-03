@@ -73,28 +73,59 @@ class NotesController extends Controller
      */
     public function uploadFile(Request $request)
     {
-        $user_ob = $this->getUser();
-        $vote = new Vote();
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Vote');
+        $vote_data = $repository->findOneBy(
+            array('user' => $this->getUser()->getId())
+        );
+        return $this->render('upload_pic.html.twig', array(
+            'user' => $vote_data
+        ));
+    }
+
+    /**
+     * @Route("/profile/pic/save", name="upload_image")
+     */
+    public function saveFileInDb(Request $request)
+    {
+        $repository = $this->getDoctrine()->getRepository('AppBundle:Vote');
+        $vote_data = $repository->findOneBy(
+            array('user' => $this->getUser()->getId())
+        );
+        $vote =  new Vote();
         $form = $this->createFormBuilder($vote)
             ->add('file', FileType::class, array('label' => 'Photo (png, jpeg)'))
             ->add('save', SubmitType::class, array('label' => 'Upload'))
             ->getForm();
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if (empty($vote_data) && $form->isSubmitted() && $form->isValid()) {
             $file = $vote->getFile();
-            $fileName = $this->generateUniqueFileName().'.'.$file->guessExtension();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
             $file->move($this->getParameter('photos_directory'), $fileName);
             $vote->setFile($fileName);
-            $vote->setUser($user_ob);
+            $vote->setUser($vote->getUser());
             $entity_manager = $this->getDoctrine()->getManager();
             $entity_manager->persist($vote);
             $entity_manager->flush();
-            return $this->redirectToRoute("/");
+            $url = $this->generateUrl("home_page");
+            return $this->redirect($url);
+        } elseif(!empty($vote_data->getId()) && $form->isSubmitted() && $form->isValid()) {
+            $file = $vote->getFile();
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+            if (file_exists($this->getParameter('photos_directory') . '/'. $vote_data->getFile())) {
+                unlink($this->getParameter('photos_directory') . '/'. $vote_data->getFile());
+            }
+            $file->move($this->getParameter('photos_directory'), $fileName);
+            $vote_data->setFile($fileName);
+            $entity_manager = $this->getDoctrine()->getManager();
+            $entity_manager->persist($vote_data);
+            $entity_manager->flush();
+            $url = $this->generateUrl("home_page");
+            return $this->redirect($url);
         } else {
-            return $this->render('upload_pic.html.twig', array(
-                'form' => $form->createView(),
-                'user' => $user_ob
-            ));
+            return $this->render('change_image.html.twig', [
+                   'form' => $form->createView()
+                ]
+            );
         }
     }
 
