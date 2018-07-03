@@ -50,6 +50,7 @@ class NotesController extends Controller
         {
             $password = $encoder->encodePassword($user, $user->getPassword());
             $user->setPassword($password);
+            $user->setEnabled(1);
 
             $entity_manager = $this->getDoctrine()->getManager();
             $entity_manager->persist($user);
@@ -88,7 +89,7 @@ class NotesController extends Controller
             $entity_manager = $this->getDoctrine()->getManager();
             $entity_manager->persist($vote);
             $entity_manager->flush();
-            return $this->render("index.html.twig");
+            return $this->redirectToRoute("/");
         } else {
             return $this->render('upload_pic.html.twig', array(
                 'form' => $form->createView(),
