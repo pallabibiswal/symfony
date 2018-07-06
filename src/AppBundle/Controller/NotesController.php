@@ -136,4 +136,14 @@ class NotesController extends Controller
     {
         return md5(uniqid());
     }
+
+    /**
+     * @Route("/save/like", name = "save_likes")
+     * @param Request $request
+     * @return Response
+     */
+    public function saveLikes(Request $request)
+    {
+        return new Response('8');
+    }
 }

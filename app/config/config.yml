@@ -75,3 +75,22 @@ fos_user:
     from_email:
         address: "%mailer_user%"
         sender_name: "%mailer_user%"
+
+# Nelmio CORS Configuration
+nelmio_cors:
+    defaults:
+        allow_credentials: false
+        allow_origin: ['*']
+        allow_headers: ['*']
+        allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        max_age: 3600
+        hosts: []
+        origin_regex: false
+
+# FOSRest Configuration
+fos_rest:
+    body_listener: true
+#    format_listener:
+#        rules:
+#            - { path: '^/', priorities: ['json'], fallback_format: json, prefer_extension: false }
+    param_fetcher_listener: true
