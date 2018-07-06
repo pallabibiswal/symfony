@@ -28,4 +28,20 @@ class UserController extends FOSRestController
         }
         return new JsonResponse($info);
     }
+
+    /**
+     * @Rest\Post("/user/create")
+     * @param  $request
+     * @return View
+     */
+    public function createUser(Request $request)
+    {
+        $service = $this->container->get(UserApiService::class);
+        $user = $service->createUser($request);
+
+        if (empty($user)) {
+            return new View("there are no users exist", Response::HTTP_NOT_FOUND);
+        }
+        return new Response("Successfully created");
+    }
 }

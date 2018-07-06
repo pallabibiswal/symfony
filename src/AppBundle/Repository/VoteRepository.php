@@ -1,6 +1,8 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\User;
+use AppBundle\Entity\Vote;
 
 /**
  * VoteRepository
@@ -10,10 +12,40 @@ namespace AppBundle\Repository;
  */
 class VoteRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return array
+     */
     public function getAllData() {
         return $this->createQueryBuilder('v')
             ->select('v.id, v.file, u.username, u.email')
             ->leftJoin("v.user", "u")
             ->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY) ;
+    }
+
+    /**
+     * @param $request
+     * @return mixed
+     */
+    public function createNewUser($request)
+    {
+        $username = $request->get('username');
+        $email = $request->get('email');
+        $password = microtime();
+        $user = new User();
+        $vote = new Vote();
+        $user->setEnabled(1);
+        $user->setUsername($username);
+        $user->setEmail($email);
+        $user->setPassword($password);
+        $manager = $this->getEntityManager();
+        $manager->persist($user);
+        $manager->flush();
+
+        $vote->setUser($user);
+        $vote->setFile($password);
+        $manager->persist($vote);
+        $manager->flush();
+
+        return $user->getId();
     }
 }
