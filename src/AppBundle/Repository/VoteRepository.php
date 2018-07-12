@@ -18,7 +18,7 @@ class VoteRepository extends \Doctrine\ORM\EntityRepository
     public function getAllData() {
         return $this->createQueryBuilder('v')
             ->select('v.id, v.file, u.username, u.email, v.likes')
-            ->leftJoin("v.user", "u")
+            ->leftJoin("v.user", "u")->orderBy('v.likes', 'DESC')
             ->getQuery()->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY) ;
     }
 
