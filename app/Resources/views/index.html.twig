@@ -4,19 +4,22 @@
     {{ parent() }}
 
     <div class="container col-md-12 mt-5">
+        <span id="error" class="alert-danger"></span>
         <div class="row">
             <div class="col-md-12 mt-3">
                 <ul class="list-unstyled">
                     {% for info in data %}
-                        <li class="media">
-                            <img class="mr-3" height="100px" width="100px" src="{{ asset('uploads/photos/') }}{{ info.file }}" alt="Generic placeholder image">
-                            <div class="media-body">
-                                <h2> Username : {{ info.username }}</h2>
-                                <h4> Email Id : {{ info.email }}</h4>
-                                <button type="button" id="like-btn" class="btn-dark">Like!!!</button>
-                                <span id="total-likes"></span>
-                            </div>
-                        </li>
+                        {% if info.file %}
+                            <li class="media">
+                                <img class="mr-3" height="100px" width="100px" src="{{ asset('uploads/photos/') }}{{ info.file }}" alt="Generic placeholder image">
+                                <div class="media-body">
+                                    <h2> Username : {{ info.username }}</h2>
+                                    <h4> Email Id : {{ info.email }}</h4>
+                                    <button type="button" id="like-btn" class="btn-dark" onclick="profile.likeProfile('{{ info.id }}')">Like!!!</button>
+                                    <button id="total-likes{{ info.id }}" type="button" class="btn btn-outline-success" >{{ info.likes }}</button>
+                                </div>
+                            </li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             </div>

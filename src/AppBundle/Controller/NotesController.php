@@ -7,6 +7,7 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\Vote;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -102,13 +103,13 @@ class NotesController extends Controller
             $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
             $file->move($this->getParameter('photos_directory'), $fileName);
             $vote->setFile($fileName);
-            $vote->setUser($vote->getUser());
+            $vote->setUser($this->getUser());
             $entity_manager = $this->getDoctrine()->getManager();
             $entity_manager->persist($vote);
             $entity_manager->flush();
             $url = $this->generateUrl("home_page");
             return $this->redirect($url);
-        } elseif(!empty($vote_data->getId()) && $form->isSubmitted() && $form->isValid()) {
+        } elseif(!empty($vote_data) && $form->isSubmitted() && $form->isValid()) {
             $file = $vote->getFile();
             $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
             if (file_exists($this->getParameter('photos_directory') . '/'. $vote_data->getFile())) {
@@ -138,12 +139,25 @@ class NotesController extends Controller
     }
 
     /**
-     * @Route("/save/like", name = "save_likes")
+     * @Route("/save/like", options={"expose"=true}, name = "save_likes")
      * @param Request $request
      * @return Response
      */
     public function saveLikes(Request $request)
     {
-        return new Response('8');
+        $id = $request->get('id');
+        if (empty($id)) {
+            return false;
+        }
+
+        $entity = $this->getDoctrine()->getRepository('AppBundle:Vote');
+        $vote = $entity->find($id);
+        $vote->setLikes($vote->getLikes() + 1);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($vote);
+        $em->flush();
+
+        return new JsonResponse($vote->getLikes());
     }
 }

@@ -2,16 +2,22 @@
 
 namespace ApiBundle\Controller;
 
+use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
-class DefaultController extends Controller
+class DefaultController extends FOSRestController
 {
     /**
-     * @Route("/")
+     * @Rest\Get("/check")
+     *
+     * @param $request
+     * @return string
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->render('ApiBundle:Default:index.html.twig');
+        return new Response("Hello");
     }
 }

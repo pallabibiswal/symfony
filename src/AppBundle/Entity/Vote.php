@@ -36,6 +36,31 @@ class Vote
      */
     private $file;
 
+    /**
+     * @var
+     *
+     * @ORM\Column(name="likes", type="integer", nullable=true)
+     */
+    private $likes;
+
+    /**
+     * @return mixed
+     */
+    public function getLikes()
+    {
+        return $this->likes;
+    }
+
+    /**
+     * @param $like
+     * @return $this
+     */
+    public  function setLikes($like)
+    {
+        $this->likes = $like;
+
+        return $this;
+    }
 
     /**
      * Get id
